@@ -1,0 +1,46 @@
+@model List<Wedding>
+
+<div class="d-flex justify-content-center align-items-center">
+    <div>
+        <table class="table table-primary table-striped m-4 text-center">
+            <thead>
+                <tr>
+                    <th>Wedding Of</th>
+                    <th>Date</th>
+                    <th>Guest Count</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(Wedding w in Model)
+            {
+                Reservation? RSVPList = w.WeddingReservations.FirstOrDefault(a => a.UserId == Context.Session.GetInt32("UserId"));
+                <tr>
+                    <td><a href="/weddings/show/@w.WeddingId">@w.WedderOne & @w.WedderTwo</a></td>
+                    <td>@w.Date.ToString("MM/dd/yy")</td>
+                    <td>@w.WeddingReservations.Count</td>
+                    <td>
+                        @if(w.UserId == Context.Session.GetInt32("UserId"))
+                        {
+                            <form asp-action="DestroyWedding" method="post" asp-route-weddingId="@w.WeddingId">
+                                <input type="submit" value="Delete" class="btn btn-danger">
+                            </form>
+                        } else if (RSVPList != null)
+                        {
+                            <form asp-action="DestroyReservation" method="post" asp-route-reservationId="@RSVPList.ReservationId">
+                                <input type="submit" value="un-RSVP" class="btn btn-primary">
+                            </form>
+                        } else {
+                            <form asp-action="CreateReservation" method="post">
+                                <input type="submit" value="RSVP" class="btn btn-success">
+                                <input type="hidden" name="UserId" value='@Context.Session.GetInt32("UserId")'>
+                                <input type="hidden" name="WeddingId" value="@w.WeddingId">
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

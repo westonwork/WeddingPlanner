@@ -1,0 +1,13 @@
+@model MyViewModel
+
+<div>
+    <h1>@Model.Wedding.WedderOne & @Model.Wedding.WedderTwo</h1>
+    <p>Date: @Model.Wedding.CreatedAt.ToShortDateString()</p>
+    <p>Guests:</p>
+    @foreach(Reservation r in Model.Wedding.WeddingReservations){
+        if(r.User is not null)
+        {
+            <li>@r.User.FirstName @r.User.LastName</li>
+        }
+    }
+</div>
